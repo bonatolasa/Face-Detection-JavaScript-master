@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Detection Studio</title>
+  <script defer src="face-api.min.js"></script>
+  <script defer src="script.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(145deg, #1a1e2c, #0f111a);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    .dashboard {
+      display: flex;
+      gap: 20px;
+      background: rgba(18, 22, 35, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .camera-panel {
+      position: relative;
+      background: #000;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+    }
+    .video-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    #video {
+      display: block;
+      width: 720px;
+      height: 560px;
+      object-fit: cover;
+      border-radius: 1.5rem;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 1.5rem;
+      pointer-events: none;
+    }
+    .control-panel {
+      width: 280px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 1.5rem;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .info-card {
+      background: rgba(0,0,0,0.4);
+      border-radius: 1rem;
+      padding: 12px;
+      border-left: 3px solid #3b82f6;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      color: #cbd5e6;
+      font-size: 0.9rem;
+    }
+    .stat-value {
+      font-weight: bold;
+      color: white;
+      font-family: monospace;
+    }
+    button {
+      background: #3b82f6;
+      border: none;
+      padding: 10px;
+      border-radius: 2rem;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button:hover {
+      background: #2563eb;
+      transform: scale(0.98);
+    }
+    .danger-btn {
+      background: #ef4444;
+    }
+    .danger-btn:hover {
+      background: #dc2626;
+    }
+    .footer-note {
+      font-size: 0.7rem;
+      color: #6c7a91;
+      text-align: center;
+      margin-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 12px;
+    }
+    h4 {
+      margin: 0 0 8px 0;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+    }
+    .known-list {
+      max-height: 140px;
+      overflow-y: auto;
+      background: #0f111a;
+      border-radius: 0.8rem;
+      padding: 8px;
+      font-size: 0.75rem;
+    }
+    .known-item {
+      background: #1e2438;
+      margin: 4px 0;
+      padding: 4px 8px;
+      border-radius: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #e2e8f0;
+    }
+    .remove-icon {
+      background: #ef4444;
+      border-radius: 30px;
+      padding: 2px 8px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard">
+  <div class="camera-panel">
+    <div class="video-wrapper">
+      <video id="video" width="720" height="560" autoplay muted playsinline></video>
+    </div>
+  </div>
+  <div class="control-panel">
+    <div class="info-card">
+      <div class="stats">👥 Faces detected: <span id="faceCount" class="stat-value">0</span></div>
+      <div class="stats">🎭 Top emotion: <span id="globalEmotion" class="stat-value">—</span></div>
+      <div class="stats">⚡ Model status: <span id="modelStatus" class="stat-value" style="color:#86efac;">loading...</span></div>
+    </div>
+    <button id="enrollBtn">📝 Enroll current face</button>
+    <button id="clearAllBtn" class="danger-btn">🗑️ Clear all</button>
+    <h4>📋 Known identities</h4>
+    <div id="knownFacesList" class="known-list">✨ No enrolled faces yet</div>
+    <div class="footer-note">
+      🔍 Detection | Landmarks | Expressions | Age/Gender | Face Recognition<br>
+      💡 Click "Enroll" to save a face, then it will be recognized!
+    </div>
+  </div>
+</div>
+</body>
+</html>
